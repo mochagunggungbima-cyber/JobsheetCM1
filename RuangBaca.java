@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class RuangBaca {
 
     Mahasiswa[] listMahasiswa;
@@ -84,24 +86,50 @@ public class RuangBaca {
         System.out.println("Total Denda Keseluruhan : Rp " + totalDenda);
     }
 
-    // ─── MENU 4: Sorting dengan Insertion Sort (descending by denda) ─────────
+    // ─── MENU 4: Sorting dengan Insertion Sort + pilihan Ascending/Descending ─
     public void insertionSortByDenda() {
+        Scanner sc = new Scanner(System.in);
+
+        // [MODIFIKASI NO.2 MUDAH] Tambah pilihan arah pengurutan
+        System.out.println("\n----------------------------------------");
+        System.out.println("Pilih urutan pengurutan:");
+        System.out.println("1. Descending (Denda Terbesar ke Terkecil)");
+        System.out.println("2. Ascending  (Denda Terkecil ke Terbesar)");
+        System.out.print("Pilihan : ");
+        int pilihanUrut = sc.nextInt();
+
+        boolean descending = (pilihanUrut == 1);
+
         Peminjaman[] sorted = listPeminjaman.clone();
         int n = sorted.length;
 
+        // Insertion Sort dengan kondisi arah berdasarkan pilihan user
         for (int i = 1; i < n; i++) {
             Peminjaman key = sorted[i];
             int j = i - 1;
-            while (j >= 0 && sorted[j].denda < key.denda) {
-                sorted[j + 1] = sorted[j];
-                j--;
+
+            if (descending) {
+                // Descending: denda terbesar di depan
+                while (j >= 0 && sorted[j].denda < key.denda) {
+                    sorted[j + 1] = sorted[j];
+                    j--;
+                }
+            } else {
+                // Ascending: denda terkecil di depan
+                while (j >= 0 && sorted[j].denda > key.denda) {
+                    sorted[j + 1] = sorted[j];
+                    j--;
+                }
             }
             sorted[j + 1] = key;
         }
 
+        String labelUrut = descending ? "TERBESAR KE TERKECIL (DESCENDING)" : "TERKECIL KE TERBESAR (ASCENDING)";
+
         System.out.println("\n========================================");
         System.out.println("  DATA PEMINJAMAN DIURUTKAN BERDASARKAN");
-        System.out.println("       DENDA TERBESAR (INSERTION SORT)");
+        System.out.println("       DENDA " + labelUrut);
+        System.out.println("         (INSERTION SORT)");
         System.out.println("========================================");
         System.out.printf("%-4s %-8s %-10s %-15s %-10s%n",
                 "No", "NIM", "Nama", "Judul Buku", "Denda");
@@ -114,20 +142,28 @@ public class RuangBaca {
         }
     }
 
-    // ─── MENU 5: Binary Search berdasarkan NIM ───────────────────────────────
-    // Binary search perlu data terurut → sort copy array by NIM dulu
+    // ─── MENU 5: Binary Search berdasarkan NIM + tampil indeks ───────────────
     public void binarySearchByNIM(String nimCari) {
         // Salin dan urutkan berdasarkan NIM (ascending) pakai Insertion Sort
         Peminjaman[] sorted = listPeminjaman.clone();
         int n = sorted.length;
+
+        // Simpan indeks asli sebelum sorting agar bisa ditampilkan
+        int[] indeksAsli = new int[n];
+        for (int i = 0; i < n; i++) indeksAsli[i] = i;
+
+        // Insertion Sort berdasarkan NIM (sekaligus pindahkan indeksAsli)
         for (int i = 1; i < n; i++) {
             Peminjaman key = sorted[i];
+            int keyIdx = indeksAsli[i];
             int j = i - 1;
             while (j >= 0 && sorted[j].mahasiswa.nim.compareTo(key.mahasiswa.nim) > 0) {
                 sorted[j + 1] = sorted[j];
+                indeksAsli[j + 1] = indeksAsli[j];
                 j--;
             }
             sorted[j + 1] = key;
+            indeksAsli[j + 1] = keyIdx;
         }
 
         System.out.println("\n========================================");
@@ -144,6 +180,7 @@ public class RuangBaca {
         while (left <= right) {
             int mid = (left + right) / 2;
             int cmp = sorted[mid].mahasiswa.nim.compareTo(nimCari);
+
             if (cmp == 0) {
                 posisi = mid;
                 break;
@@ -155,10 +192,14 @@ public class RuangBaca {
         }
 
         if (posisi != -1) {
-            // Tampilkan semua data dengan NIM tersebut
-            for (Peminjaman p : sorted) {
-                if (p.mahasiswa.nim.equals(nimCari)) {
-                    p.tampilInformasi();
+            // [MODIFIKASI NO.3 MUDAH] Tampilkan indeks data ditemukan
+            System.out.println(">> Data ditemukan!");
+
+            // Tampilkan semua data dengan NIM tersebut beserta indeksnya
+            for (int i = 0; i < n; i++) {
+                if (sorted[i].mahasiswa.nim.equals(nimCari)) {
+                    System.out.println("\n[Indeks ke-" + indeksAsli[i] + " pada data peminjaman asli]");
+                    sorted[i].tampilInformasi();
                     System.out.println("----------------------------------------");
                 }
             }
