@@ -7,14 +7,12 @@ public class RuangBaca {
     Peminjaman[] listPeminjaman;
 
     public RuangBaca() {
-        // Data Mahasiswa
         listMahasiswa = new Mahasiswa[]{
             new Mahasiswa("22001", "Andi",  "Teknik Informatika"),
             new Mahasiswa("22002", "Budi",  "Teknik Informatika"),
             new Mahasiswa("22003", "Citra", "Sistem Informasi Bisnis")
         };
 
-        // Data Buku
         listBuku = new Buku[]{
             new Buku("B001", "Algoritma",    2020),
             new Buku("B002", "Basis Data",   2019),
@@ -22,17 +20,15 @@ public class RuangBaca {
             new Buku("B004", "Fisika",       2024)
         };
 
-        // Data Peminjaman
         listPeminjaman = new Peminjaman[]{
-            new Peminjaman(listMahasiswa[0], listBuku[0], 7),   // Andi - Algoritma
-            new Peminjaman(listMahasiswa[1], listBuku[1], 3),   // Budi - Basis Data
-            new Peminjaman(listMahasiswa[2], listBuku[2], 10),  // Citra - Pemrograman
-            new Peminjaman(listMahasiswa[2], listBuku[3], 6),   // Citra - Fisika
-            new Peminjaman(listMahasiswa[0], listBuku[1], 4)    // Andi - Basis Data
+            new Peminjaman(listMahasiswa[0], listBuku[0], 7),
+            new Peminjaman(listMahasiswa[1], listBuku[1], 3),
+            new Peminjaman(listMahasiswa[2], listBuku[2], 10),
+            new Peminjaman(listMahasiswa[2], listBuku[3], 6),
+            new Peminjaman(listMahasiswa[0], listBuku[1], 4)
         };
     }
 
-    // ─── MENU 1: Tampil data Mahasiswa & Buku ────────────────────────────────
     public void tampilDataMahasiswaDanBuku() {
         System.out.println("\n========================================");
         System.out.println("          DATA MAHASISWA");
@@ -53,7 +49,6 @@ public class RuangBaca {
         }
     }
 
-    // ─── MENU 2: Tampil data Peminjaman ──────────────────────────────────────
     public void tampilDataPeminjaman() {
         System.out.println("\n========================================");
         System.out.println("         DATA PEMINJAMAN BUKU");
@@ -69,7 +64,6 @@ public class RuangBaca {
         }
     }
 
-    // ─── MENU 3: Hitung Denda ────────────────────────────────────────────────
     public void tampilHitungDenda() {
         System.out.println("\n========================================");
         System.out.println("       PERHITUNGAN DENDA KETERLAMBATAN");
@@ -86,11 +80,9 @@ public class RuangBaca {
         System.out.println("Total Denda Keseluruhan : Rp " + totalDenda);
     }
 
-    // ─── MENU 4: Sorting dengan Insertion Sort + pilihan Ascending/Descending ─
     public void insertionSortByDenda() {
         Scanner sc = new Scanner(System.in);
 
-        // [MODIFIKASI NO.2 MUDAH] Tambah pilihan arah pengurutan
         System.out.println("\n----------------------------------------");
         System.out.println("Pilih urutan pengurutan:");
         System.out.println("1. Descending (Denda Terbesar ke Terkecil)");
@@ -103,19 +95,16 @@ public class RuangBaca {
         Peminjaman[] sorted = listPeminjaman.clone();
         int n = sorted.length;
 
-        // Insertion Sort dengan kondisi arah berdasarkan pilihan user
         for (int i = 1; i < n; i++) {
             Peminjaman key = sorted[i];
             int j = i - 1;
 
             if (descending) {
-                // Descending: denda terbesar di depan
                 while (j >= 0 && sorted[j].denda < key.denda) {
                     sorted[j + 1] = sorted[j];
                     j--;
                 }
             } else {
-                // Ascending: denda terkecil di depan
                 while (j >= 0 && sorted[j].denda > key.denda) {
                     sorted[j + 1] = sorted[j];
                     j--;
@@ -124,7 +113,9 @@ public class RuangBaca {
             sorted[j + 1] = key;
         }
 
-        String labelUrut = descending ? "TERBESAR KE TERKECIL (DESCENDING)" : "TERKECIL KE TERBESAR (ASCENDING)";
+        String labelUrut = descending
+                ? "TERBESAR KE TERKECIL (DESCENDING)"
+                : "TERKECIL KE TERBESAR (ASCENDING)";
 
         System.out.println("\n========================================");
         System.out.println("  DATA PEMINJAMAN DIURUTKAN BERDASARKAN");
@@ -142,28 +133,18 @@ public class RuangBaca {
         }
     }
 
-    // ─── MENU 5: Binary Search berdasarkan NIM + tampil indeks ───────────────
     public void binarySearchByNIM(String nimCari) {
-        // Salin dan urutkan berdasarkan NIM (ascending) pakai Insertion Sort
         Peminjaman[] sorted = listPeminjaman.clone();
         int n = sorted.length;
 
-        // Simpan indeks asli sebelum sorting agar bisa ditampilkan
-        int[] indeksAsli = new int[n];
-        for (int i = 0; i < n; i++) indeksAsli[i] = i;
-
-        // Insertion Sort berdasarkan NIM (sekaligus pindahkan indeksAsli)
         for (int i = 1; i < n; i++) {
             Peminjaman key = sorted[i];
-            int keyIdx = indeksAsli[i];
             int j = i - 1;
             while (j >= 0 && sorted[j].mahasiswa.nim.compareTo(key.mahasiswa.nim) > 0) {
                 sorted[j + 1] = sorted[j];
-                indeksAsli[j + 1] = indeksAsli[j];
                 j--;
             }
             sorted[j + 1] = key;
-            indeksAsli[j + 1] = keyIdx;
         }
 
         System.out.println("\n========================================");
@@ -173,33 +154,21 @@ public class RuangBaca {
         System.out.println("NIM yang dicari : " + nimCari);
         System.out.println("----------------------------------------");
 
-        // Binary Search
         int left = 0, right = n - 1;
         int posisi = -1;
 
         while (left <= right) {
             int mid = (left + right) / 2;
             int cmp = sorted[mid].mahasiswa.nim.compareTo(nimCari);
-
-            if (cmp == 0) {
-                posisi = mid;
-                break;
-            } else if (cmp < 0) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
+            if (cmp == 0) { posisi = mid; break; }
+            else if (cmp < 0) left = mid + 1;
+            else right = mid - 1;
         }
 
         if (posisi != -1) {
-            // [MODIFIKASI NO.3 MUDAH] Tampilkan indeks data ditemukan
-            System.out.println(">> Data ditemukan!");
-
-            // Tampilkan semua data dengan NIM tersebut beserta indeksnya
-            for (int i = 0; i < n; i++) {
-                if (sorted[i].mahasiswa.nim.equals(nimCari)) {
-                    System.out.println("\n[Indeks ke-" + indeksAsli[i] + " pada data peminjaman asli]");
-                    sorted[i].tampilInformasi();
+            for (Peminjaman p : sorted) {
+                if (p.mahasiswa.nim.equals(nimCari)) {
+                    p.tampilInformasi();
                     System.out.println("----------------------------------------");
                 }
             }
