@@ -1,8 +1,8 @@
 import java.util.Scanner;
 
-public class MainProgram_No3 {
+public class MainProgram {
     public static void main(String[] args) {
-        RuangBaca_No3 sistem = new RuangBaca_No3();
+        RuangBaca sistem = new RuangBaca();
         Scanner sc = new Scanner(System.in);
         int pilihan;
 
@@ -13,8 +13,8 @@ public class MainProgram_No3 {
             System.out.println("1. Tampil Data Mahasiswa dan Buku");
             System.out.println("2. Tampil Data Peminjaman");
             System.out.println("3. Hitung Keterlambatan dan Denda");
-            System.out.println("4. Urutkan Data Berdasarkan Denda Terbesar");
-            System.out.println("5. Cari Peminjaman Berdasarkan NIM (+Indeks)");
+            System.out.println("4. Urutkan Data Berdasarkan Denda (Asc/Desc)");
+            System.out.println("5. Cari Peminjaman Berdasarkan NIM");
             System.out.println("0. Keluar");
             System.out.print("Pilih menu : ");
             pilihan = sc.nextInt();
